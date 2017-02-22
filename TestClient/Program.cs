@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ShortestPath.Entities;
 
 namespace TestClient
@@ -28,27 +29,39 @@ namespace TestClient
                 new Relation("F","D", 192),
             };
 
-            ShortestPathSeeker<Relation, string> shps = new ShortestPathSeeker<Relation, string>
+            ShortestPathSeeker<Relation, string> seeker = new ShortestPathSeeker<Relation, string>
                 (
                     g => g.From,
                     g => g.To,
                     relations
                  );
 
-            var sps = shps.FindAllPaths("A", "D");
-            var shortestDistance = shps.GetShortestDistance("A", "D", g => g.Distance);
+            var allPaths = seeker.FindAllPaths("A", "E");
+            var shortestPaths = seeker.GetShortestPaths("A", "E");
+            var shortestDistance = seeker.GetShortestDistance("A", "E", g => g.Distance);
 
-            foreach (var path in sps)
+            Console.WriteLine("All paths:");
+            foreach (var path in allPaths)
             {
-                foreach(var pat in path)
-                Console.Write(pat.From + "->" + pat.To + " ");
+                foreach(var rel in path)
+                Console.Write(rel.From + "->" + rel.To + " ");
 
                 Console.WriteLine();
             }
 
-            foreach (var pat in shortestDistance.Item1)
+            Console.WriteLine("\nShortest paths:");
+            foreach (var path in shortestPaths)
             {
-                Console.Write(pat.From + "->" + pat.To + " ");
+                foreach (var rel in path)
+                    Console.Write(rel.From + "->" + rel.To + " ");
+
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("\nShortest distance:");
+            foreach (var rel in shortestDistance.Item1)
+            {
+                Console.Write(rel.From + "->" + rel.To + " ");
             }
             Console.WriteLine("Distance = {0}", shortestDistance.Item2);
 
